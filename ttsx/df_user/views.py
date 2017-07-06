@@ -1,17 +1,21 @@
 #coding=utf-8
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render,redirect
+from django.http import HttpResponse,JsonResponse
 from hashlib import sha1
 from models import *
+import datetime
 # Create your views here.
 
 
 def index(request):
     return HttpResponse('index')
 
+
 def register(request):
-    context = {'title':'注册'}
+    context = {'title':'注册','hair_flog':'0'}
     return render(request,'userinfo/register.html',context)
+
+
 def register_handle(request):
     dict = request.POST
     uname = dict.get('user_name')
@@ -24,4 +28,96 @@ def register_handle(request):
     it = UserInfo(uname = uname,upwd = upwd_sha,uemail = uemail)
     it.save()
 
-    return HttpResponse('ok')
+    return redirect('/usr/login/')
+
+
+def uname_confm(request):
+    r = request.GET
+    newname = r.get('uname')
+    it = UserInfo.objects.filter(uname = newname)
+    if len(it)==1:
+        context = {'flog':'1'}
+        return JsonResponse(context)
+    else:
+        return JsonResponse({'flog':'0'})
+
+
+def login(request):
+    context = {}
+    context['title'] = '登录'
+    context['hair_flog'] = '0'
+    context['rem_name']=request.COOKIES.get('uname')
+
+    return render(request,'userinfo/login.html',context)
+
+
+def login_handle(request):
+    dict = request.POST
+    uname = dict.get('username')
+    upwd = dict.get('pwd')
+    remember = dict.get('remember')
+
+    s1 = sha1()
+    s1.update(upwd)
+    upwd_sha = s1.hexdigest()
+    context = {'pwd_flog':'0'}
+    it = UserInfo.objects.get(uname = uname)
+    if it.upwd == upwd_sha:
+        request.session['uid'] = it.id
+        if remember == 'on':
+            #fanhui = redirect('/usr/center/')
+            context = {'uname':uname,'title':'用户中心'}
+            fanhui = render(request,'userinfo/center.html',context)
+            fanhui.set_cookie('uname',value=uname,expires= datetime.date.today()+ datetime.timedelta(1))
+        return fanhui
+    else:
+        context['title'] = '重新登录'
+        context['pwd_flog'] = '1'
+        context['uname'] = uname
+        return render(request,'userinfo/login.html',context)
+
+def center(request):
+    context = {'title':'用户中心'}
+    list = UserInfo.objects.filter(pk = request.session.get('uid'))
+    if len(list) == 1:
+        uname = list[0].uname
+        uphone = list[0].uphone
+        ucode = list[0].ucode
+        uaddr_detail = list[0].uaddr_detail
+        uemail = list[0].uemail
+        context['uname'] = uname
+        context['uphone'] = uphone
+        context['ucode'] = ucode
+        context['uaddr_detail'] = uaddr_detail
+        context['uemail'] = uemail
+    else:
+        print('没有存储下来，登录的信息')
+
+    return render(request,'userinfo/center.html',context)
+
+def books(request):
+    context = {'title': '订单'}
+    return render(request, 'userinfo/books.html', context)
+
+
+def shouaddr(request):
+    context = {'title': '收获地址'}
+    r = UserInfo.objects.filter(pk = request.session.get('uid'))
+    context['addr_detail'] = r[0].uaddr_detail
+    context['urcv'] = r[0].uname
+    context['uphone'] = r[0].uphone
+
+    return render(request, 'userinfo/shouaddr.html', context)
+
+def addr_handle(request):
+    r = request.POST
+    recv_name = r.get('recv_name')
+    addr_detail = r.get('addr_detail')
+    ucode = r.get('ucode')
+    uphone = r.get('phone')
+    p = UserInfo(urcv=recv_name, uaddr_detail=addr_detail, ucode=ucode, uphone=uphone)
+    p.save()
+    context = {'addr_detail':addr_detail,'urcv':recv_name,'uphone':uphone}
+    context['title'] = '地址'
+    return render(request,'userinfo/shouaddr.html',context)
+

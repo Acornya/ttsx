@@ -48,8 +48,20 @@ $(function(){
 		}
 		else
 		{
-			$('#user_name').next().hide();
-			error_name = false;
+			$.get('/usr/uname_confm/',{'uname':$('#user_name').val()},function (data) {
+				if(data.flog == '1')
+				{
+					$('#user_name').next().html('用户名存在')
+					$('#user_name').next().show();
+					error_name = true;
+				}
+				else
+				{
+					$('#user_name').next().hide();
+					error_name = false;
+				}
+            })
+
 		}
 	}
 

@@ -1,0 +1,98 @@
+
+{%extends 'base.html'%}
+{%block js%}
+<script>
+	$(function () {
+	    $name = ''
+		$('.name_input').blur(function () {
+			var len = $('.name_input').val().length;
+			error_name = false
+			error_name = false
+		if(len<5||len>20)
+		{
+			$('.user_error').html('请输入5-20个字符的用户名').show()
+			error_name = true;
+		}
+		else
+		{
+			$.get('/usr/uname_confm/',{'uname':$('.name_input').val()},function (data) {
+				if(data.flog == '0')
+				{
+					$('.user_error').html('用户不存在请先注册').show()
+
+					error_name = true;
+				}
+				else
+				{
+
+					$('.user_error').html('').show()
+					error_name = false;
+				}
+            })
+
+		}
+        })
+		$('#fm').submit(function () {
+			$('.name_input').blur()
+			if(error_name==false){
+			    return true
+			}
+			else{
+			    return false
+			}
+
+        })
+
+		if('{{pwd_flog}}'== '1'){
+
+	        $('.name_input').val('{{uname}}')
+			$('.pass_input').val('')
+		}
+		else{
+		    $('.name_input').val('')
+			$('.pass_input').val('')
+		}
+		if('{{rem_name}}') {
+            $('.name_input').val('{{rem_name}}')
+        }
+        else if('{{rem_name}}' == None){
+		    $('.name_input').val('')
+		}
+    })
+</script>
+    {%endblock js%}
+{%block body%}
+	<div class="login_top clearfix">
+		<a href="/" class="login_logo"><img src="/static/images/logo02.png"></a>
+	</div>
+
+	<div class="login_form_bg">
+		<div class="login_form_wrap clearfix">
+			<div class="login_banner fl"></div>
+			<div class="slogan fl">日夜兼程 · 急速送达</div>
+			<div class="login_form fr">
+				<div class="login_title clearfix">
+					<h1>用户登录</h1>
+					<a href="/usr/register/">立即注册</a>
+				</div>
+				<div class="form_input">
+					<form method="post" action="/usr/login_handle/" id="fm">
+						{%csrf_token%}
+
+						<input type="text" name="username" class="name_input" placeholder="请输入用户名">
+						<div class="user_error">输入错误</div>
+						<input type="password" name="pwd" class="pass_input" placeholder="请输入密码">
+						<div class="pwd_error">输入错误</div>
+						<div class="more_input clearfix">
+							<input type="checkbox" name="remember" checked="checked">
+							<label>记住用户名</label>
+							<a href="#">忘记密码</a>
+						</div>
+						<input type="submit" name="" value="登录" class="input_submit">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{%endblock body%}
+
