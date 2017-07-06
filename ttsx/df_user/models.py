@@ -1,21 +1,15 @@
 from django.db import models
 
 # Create your models here.
-
 class UserInfo(models.Model):
-    uname = models.CharField(max_length=20)
-    upwd = models.CharField(max_length=20)
-    uphone = models.IntegerField()
-    uemail = models.CharField(max_length=20)
+    uname = models.CharField(default='', max_length=20)
+    upwd = models.CharField(default='', max_length=40)   #mi ma
+    uphone = models.CharField(default='', max_length=11)
+    ucode = models.CharField(default='', max_length=6)
+    uaddr_detail = models.CharField(default='', max_length=80)
+    urcv = models.CharField(default='', max_length=20)
+    uemail = models.CharField(default='', max_length=20)
 
-    def __str__(self):
-        return "%d" % self.pk
 
 
-class HeroInfo(models.Model):
-    hname = models.CharField(max_length=20)
-    hgender = models.BooleanField()
-    hcontent = models.CharField(max_length=100)
-    hBook = models.ForeignKey('BookInfo')
-    def __str__(self):
-        return "%d" % self.pk
+
