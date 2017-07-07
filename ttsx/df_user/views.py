@@ -56,26 +56,21 @@ def login_handle(request):
     dict = request.POST
     uname = dict.get('username')
     upwd = dict.get('pwd')
-
     remember = dict.get('remember')
 
     s1 = sha1()
     s1.update(upwd)
     upwd_sha = s1.hexdigest()
-    print(upwd_sha)
-
     context = {'pwd_flog':'0'}
     it = UserInfo.objects.get(uname = uname)
     if it.upwd == upwd_sha:
         request.session['uid'] = it.id
-        lastpath = request.session['lastpath']
         if remember == 'on':
             #fanhui = redirect('/usr/center/')
-            # context = {'uname':uname,'title':'用户中心'}
-            # fanhui = render(request,'userinfo/center.html',context)
-
-            redirect(lastpath).set_cookie('uname',value=uname,expires= datetime.date.today()+ datetime.timedelta(1))
-        return redirect(lastpath)
+            context = {'uname':uname,'title':'用户中心'}
+            fanhui = render(request,'userinfo/center.html',context)
+            fanhui.set_cookie('uname',value=uname,expires= datetime.date.today()+ datetime.timedelta(1))
+        return fanhui
     else:
         context['title'] = '重新登录'
         context['pwd_flog'] = '1'
@@ -83,6 +78,7 @@ def login_handle(request):
         return render(request,'userinfo/login.html',context)
 
 
+@auth
 def center(request):
     context = {'title':'用户中心'}
     list = UserInfo.objects.filter(pk = request.session.get('uid'))
@@ -141,8 +137,7 @@ def close(request):
 
 def logout(request):
     request.session.flush()
-    return redirect('/usr/login/')
-
+    return redirect('/u')
 
 
 
