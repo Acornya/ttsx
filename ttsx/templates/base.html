@@ -9,6 +9,27 @@
     {%block js%}
 	<script type="text/javascript" src="/static/js/register.js"></script>
     {%endblock js%}
+	<script>
+		$(function () {
+			window.addEventListener('beforeunload', function(event) {
+
+				  console.log('I am the 1st one.');
+				});
+				window.onbeforeunload = function(e) {
+				  e = e || window.event;
+				  // 兼容IE8和Firefox 4之前的版本
+				  if (e) {
+					e.returnValue = '重新加载提示';
+				   }
+				   // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+				   return '关闭提示......';
+				};
+
+
+       }
+
+        )
+	</script>
 </head>
 <body>
 {%if hair_flog|default:'1' == '1'%}
@@ -17,14 +38,19 @@
 		<div class="header">
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
-				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
+				{%if request.session.uid%}
+				<div class="login_btn fl">
+					欢迎您：<em>{{uname}}</em>
+					<span>|</span>
+					<a href="/usr/logout/">退出</a>
 				</div>
+				{%else%}
 				<div class="login_btn fl">
 					<a href="/usr/login/">登录</a>
 					<span>|</span>
 					<a href="/usr/register/">注册</a>
 				</div>
+				{%endif%}
 				<div class="user_link fl">
 					<span>|</span>
 					<a href="/usr/center/">用户中心</a>

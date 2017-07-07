@@ -4,6 +4,7 @@ from django.http import HttpResponse,JsonResponse
 from hashlib import sha1
 from models import *
 import datetime
+from auth_decoration import *
 # Create your views here.
 
 
@@ -55,26 +56,32 @@ def login_handle(request):
     dict = request.POST
     uname = dict.get('username')
     upwd = dict.get('pwd')
+
     remember = dict.get('remember')
 
     s1 = sha1()
     s1.update(upwd)
     upwd_sha = s1.hexdigest()
+    print(upwd_sha)
+
     context = {'pwd_flog':'0'}
     it = UserInfo.objects.get(uname = uname)
     if it.upwd == upwd_sha:
         request.session['uid'] = it.id
+        lastpath = request.session['lastpath']
         if remember == 'on':
             #fanhui = redirect('/usr/center/')
-            context = {'uname':uname,'title':'用户中心'}
-            fanhui = render(request,'userinfo/center.html',context)
-            fanhui.set_cookie('uname',value=uname,expires= datetime.date.today()+ datetime.timedelta(1))
-        return fanhui
+            # context = {'uname':uname,'title':'用户中心'}
+            # fanhui = render(request,'userinfo/center.html',context)
+
+            redirect(lastpath).set_cookie('uname',value=uname,expires= datetime.date.today()+ datetime.timedelta(1))
+        return redirect(lastpath)
     else:
         context['title'] = '重新登录'
         context['pwd_flog'] = '1'
         context['uname'] = uname
         return render(request,'userinfo/login.html',context)
+
 
 def center(request):
     context = {'title':'用户中心'}
@@ -90,24 +97,29 @@ def center(request):
         context['ucode'] = ucode
         context['uaddr_detail'] = uaddr_detail
         context['uemail'] = uemail
+        return render(request, 'userinfo/center.html', context)
     else:
-        print('没有存储下来，登录的信息')
+        return redirect('/usr/login/')
 
-    return render(request,'userinfo/center.html',context)
 
+@auth
 def books(request):
     context = {'title': '订单'}
+    r = UserInfo.objects.filter(pk=request.session.get('uid'))
+    context['uname'] = r[0].uname
     return render(request, 'userinfo/books.html', context)
 
-
+@auth
 def shouaddr(request):
     context = {'title': '收获地址'}
     r = UserInfo.objects.filter(pk = request.session.get('uid'))
     context['addr_detail'] = r[0].uaddr_detail
     context['urcv'] = r[0].uname
     context['uphone'] = r[0].uphone
+    context['uname'] = r[0].uname
 
     return render(request, 'userinfo/shouaddr.html', context)
+
 
 def addr_handle(request):
     r = request.POST
@@ -120,4 +132,19 @@ def addr_handle(request):
     context = {'addr_detail':addr_detail,'urcv':recv_name,'uphone':uphone}
     context['title'] = '地址'
     return render(request,'userinfo/shouaddr.html',context)
+
+
+def close(request):
+    print('noonooonoononoo')
+    request.session.flush()
+    return JsonResponse()
+
+def logout(request):
+    request.session.flush()
+    return redirect('/usr/login/')
+
+
+
+
+
 

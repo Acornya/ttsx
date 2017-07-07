@@ -52,12 +52,13 @@
 		    $('.name_input').val('')
 			$('.pass_input').val('')
 		}
-		if('{{rem_name}}') {
-            $('.name_input').val('{{rem_name}}')
-        }
-        else if('{{rem_name}}' == None){
+		if('{{rem_name}}' == None){
 		    $('.name_input').val('')
 		}
+		else if('{{rem_name}}') {
+            $('.name_input').val('{{rem_name}}')
+        }
+
     })
 </script>
     {%endblock js%}
