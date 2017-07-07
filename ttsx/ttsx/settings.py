@@ -37,7 +37,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'df_user'
+    'df_user',
+    'df_goods',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -49,7 +51,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # 'df_user.middleware.UrlMiddleware',
+    'df_user.middleware.UrlMiddleware',
 )
 
 ROOT_URLCONF = 'ttsx.urls'

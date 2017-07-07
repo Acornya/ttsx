@@ -137,7 +137,7 @@ def close(request):
 
 def logout(request):
     request.session.flush()
-    return redirect('/u')
+    return redirect('/usr/login/')
 
 
 
