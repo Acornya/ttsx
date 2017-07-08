@@ -9,6 +9,6 @@ def index(request):
         glist = type_cell.goodsinfo_set.order_by('-id')[0:4]
         clist = type_cell.goodsinfo_set.order_by('-gclick')[0:4]
         all_list.append({'t1':type_cell,'glist':glist,'clist':clist})
-    context = {'all_list':all_list,'title':'首页'}
+    context = {'all_list':all_list,'title':'首页','search_flog':'1'}
 
     return render(request, 'goodsinfo/index.html',context)

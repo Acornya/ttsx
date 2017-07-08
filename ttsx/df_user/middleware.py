@@ -1,6 +1,6 @@
 
 class UrlMiddleware:
-    def process_request(self,request):
+    def process_view(self,request, view_func, view_args, view_kwargs):
         # print '-----------------%s'%request.path
         if request.path not in ['/usr/register/',
                                 '/usr/register_handle/',
