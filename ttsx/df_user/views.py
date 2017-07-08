@@ -48,6 +48,7 @@ def login(request):
     context['title'] = '登录'
     context['hair_flog'] = '0'
     context['rem_name']=request.COOKIES.get('uname')
+    print request.COOKIES.get('uname')
 
     return render(request,'userinfo/login.html',context)
 
@@ -65,10 +66,10 @@ def login_handle(request):
     it = UserInfo.objects.get(uname = uname)
     if it.upwd == upwd_sha:
         request.session['uid'] = it.id
+        request.session['uname'] = it.uname
+        fanhui = redirect(request.session.get('lastpath', '/'))
         if remember == 'on':
-            #fanhui = redirect('/usr/center/')
-            context = {'uname':uname,'title':'用户中心'}
-            fanhui = render(request,'userinfo/center.html',context)
+
             fanhui.set_cookie('uname',value=uname,expires= datetime.date.today()+ datetime.timedelta(1))
         return fanhui
     else:

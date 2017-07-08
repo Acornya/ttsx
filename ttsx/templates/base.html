@@ -40,7 +40,7 @@
 			<div class="fr">
 				{%if request.session.uid%}
 				<div class="login_btn fl">
-					欢迎您：<em>{{uname}}</em>
+					欢迎您：<em>{{request.session.uname}}</em>
 					<span>|</span>
 					<a href="/usr/logout/">退出</a>
 				</div>
