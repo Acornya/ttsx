@@ -12,3 +12,14 @@ def index(request):
     context = {'all_list':all_list,'title':'首页','search_flog':'1'}
 
     return render(request, 'goodsinfo/index.html',context)
+
+def list(request,sort_id):
+    onetype = GoodsType.objects.get(pk = int(sort_id))
+
+
+    context = {'search_flog':'1','title':'列表页','typetitle':onetype.Gsorts}
+    return render(request,'goodsinfo/list.html',context)
+
+def detail(request):
+    context = {'search_flog':'1','title':'detail页'}
+    return render(request,'goodsinfo/detail.html',context)
