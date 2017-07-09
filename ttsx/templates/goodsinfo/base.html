@@ -34,16 +34,14 @@
 			<div class="new_goods">
 				<h3>新品推荐</h3>
 				<ul>
+					{%for good in newgoods%}
 					<li>
-						<a href="#"><img src="images/goods/goods001.jpg"></a>
-						<h4><a href="#">进口柠檬</a></h4>
-						<div class="prize">￥3.90</div>
+						<a href="/{{good.id}}/"><img src='/static/{{good.gimg}}/'></a>
+						<h4><a href="/{{good.id}}/">{{good.gtitle}}</a></h4>
+						<div class="prize">￥{{good.gprice}}</div>
 					</li>
-					<li>
-						<a href="#"><img src="images/goods/goods002.jpg"></a>
-						<h4><a href="#">玫瑰香葡萄</a></h4>
-						<div class="prize">￥16.80</div>
-					</li>
+					{%endfor%}
+
 				</ul>
 			</div>
 		</div>
