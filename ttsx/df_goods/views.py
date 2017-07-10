@@ -35,6 +35,7 @@ def list(request,sort_id,recv_index):
 
 def detail(request,pic_id):
     r = request.GET
+    
     print(r.get('psort'))
 
 
