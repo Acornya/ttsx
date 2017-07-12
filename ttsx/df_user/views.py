@@ -5,6 +5,7 @@ from hashlib import sha1
 from models import *
 import datetime
 from auth_decoration import *
+from df_goods.models import GoodsInfo
 # Create your views here.
 
 
@@ -47,7 +48,10 @@ def login(request):
     context = {}
     context['title'] = '登录'
     context['hair_flog'] = '0'
-    context['rem_name']=request.COOKIES.get('uname')
+    if request.COOKIES.get('uname') == None:
+        context['rem_name'] = ''
+    else:
+        context['rem_name']=request.COOKIES.get('uname')
     # print request.COOKIES.get('uname')
 
     return render(request,'userinfo/login.html',context)
@@ -94,6 +98,16 @@ def center(request):
         context['ucode'] = ucode
         context['uaddr_detail'] = uaddr_detail
         context['uemail'] = uemail
+        good_str = request.COOKIES.get('goods_history','')
+        if good_str == '':
+            pass
+        else:
+            good_list = good_str.split(',')
+            ob_list = []
+            for good in good_list:
+                egg = GoodsInfo.objects.get(pk = int(good))
+                ob_list.append(egg)
+            context['ob_list'] = ob_list
         return render(request, 'userinfo/center.html', context)
     else:
         return redirect('/usr/login/')

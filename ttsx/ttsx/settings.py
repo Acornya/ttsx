@@ -1,3 +1,4 @@
+#coding =utf-8
 """
 Django settings for ttsx project.
 
@@ -39,7 +40,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'df_user',
     'df_goods',
+    'df_car',
     'tinymce',
+    'haystack',
+
 
 )
 
@@ -120,3 +124,13 @@ TINYMCE_DEFAULT_CONFIG = {
     'width': 600,
     'height': 400,
 }
+HAYSTACK_CONNECTIONS = {
+    'default': {
+
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

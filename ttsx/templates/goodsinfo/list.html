@@ -1,9 +1,29 @@
 {%extends 'goodsinfo/base.html'%}
 {%block js%}
 <script>
-	$('.rq').click(function () {
-		$.get('/list_{{onetype.id}}_1/',{'psort':'1'},function (data) {
+	$(function () {
+		$('.add_goods').click(function () {
+			$.get('/islogin/',function (data) {
+				if(data.flog)//login
+				{
+				    //alert('登录成功')
+					good_id = $('#btn').val()
+					$.get('/cart_save/',{'good_id':good_id},function (data) {
+						if(data.flog)
+						{
+						    alert('saved')
+						}
+						else
+						{
+						    alert('not saved')
+						}
+                    })
 
+				}
+				else{//not login
+				    self.location.href=('/usr/login/')
+				}
+            })
         })
     })
 </script>
@@ -24,18 +44,19 @@
 			<div class="sort_bar">
 				<a href="#" class="active">默认</a>
 				<a href="#">价格</a>
-				<a href="#" class="rq">人气</a>
+				<a href="#">人气</a>
 			</div>
 
 			<ul class="goods_type_list clearfix">
 				{%for one in plist%}
 				<li>
-					<a href="/{{one.id}}/"><img src="/static/{{one.gimg}}/"></a>
-					<h4><a href="/{{one.id}}/">{{one.gtitle}}</a></h4>
+					<a href="/{{one.id}}/" id="x1"><img src="/static/{{one.gimg}}/"></a>
+					<h4><a href="/{{one.id}}/" id="x2">{{one.gtitle}}</a></h4>
 					<div class="operate">
 						<span class="prize">￥{{one.gprice}}</span>
 						<span class="unit">{{one.gprice}}/{{one.gunit}}}</span>
 						<a href="#" class="add_goods" title="加入购物车"></a>
+						<input type="hidden" id="btn" value={{one.id}}>
 					</div>
 				</li>
 				{%endfor%}
@@ -44,25 +65,51 @@
 
 			<div class="pagenation">
 				<a href="/list_{{onetype.id}}_1/" >首页</a>
-				{%if plist.number|add:2 in plist.paginator.page_range and plist.number|add:-2 in plist.paginator.page_range%}
+				<a href="/list_{{onetype.id}}_{{plist.number|add:-1}}/" >last</a>
 
+				{%if plist.paginator.num_pages < 5%}
+				{%for n in plist.paginator.page_range%}
+					{%if plist.number == n%}
+				 		<a href="/list_{{onetype.id}}_{{plist.number}}/" class="active">{{plist.number}}</a>
+
+				    {%else%}
+						<a href="/list_{{onetype.id}}_{{n}}/" >{{n}}</a>
+
+					{%endif%}
+				{%endfor%}
+				{%else%}
+					{%if plist.number == 1%}
+						<a href="/#/" class="active">1</a>
+						<a href="/list_{{onetype.id}}_2/" >2</a>
+						<a href="/list_{{onetype.id}}_2/" >3</a>
+						<a href="/list_{{onetype.id}}_2/" >4</a>
+						<a href="/list_{{onetype.id}}_2/" >5</a>
+					{%elif plist.number == 2%}
+						<a href="/list_{{onetype.id}}_1/" >1</a>
+						<a href="/#/" class="active">2</a>
+						<a href="/list_{{onetype.id}}_2/" >3</a>
+						<a href="/list_{{onetype.id}}_2/" >4</a>
+						<a href="/list_{{onetype.id}}_2/" >5</a>
+					{%elif plist.number == plist.paginator.num_pages%}
+						<a href="/list_{{onetype.id}}_{{plist.paginator.num_pages|add:-4}}/" >{{plist.paginator.num_pages|add:-4}}</a>
+						<a href="/list_{{onetype.id}}_{{plist.paginator.num_pages|add:-3}}/" >{{plist.paginator.num_pages|add:-3}}</a>
+						<a href="/list_{{onetype.id}}_{{plist.paginator.num_pages|add:-2}}/" >{{plist.paginator.num_pages|add:-2}}</a>
+						<a href="/list_{{onetype.id}}_{{plist.paginator.num_pages|add:-1}}/" >{{plist.paginator.num_pages|add:-1}}</a>
+						<a href="/#/" class="active">{{plist.paginator.num_pages}}</a>
+					{%else%}
 						<a href="/list_{{onetype.id}}_{{plist.number|add:-2}}/" >{{plist.number|add:-2}}</a>
 						<a href="/list_{{onetype.id}}_{{plist.number|add:-1}}/" >{{plist.number|add:-1}}</a>
-						<a href="/list_{{onetype.id}}_{{plist.number}}/" >{{plist.number}}</a>
+						<a href="/#/" class="active">{{plist.number}}</a>
 						<a href="/list_{{onetype.id}}_{{plist.number|add:1}}/" >{{plist.number|add:1}}</a>
 						<a href="/list_{{onetype.id}}_{{plist.number|add:2}}/" >{{plist.number|add:2}}</a>
-
-				{%elif plist.number|add:2 in plist.paginator.page_range%}
-					<a href="/list_{{onetype.id}}_{{plist.number}}/" >{{plist.number}}</a>
-					<a href="/list_{{onetype.id}}_{{plist.number|add:1}}/" >{{plist.number|add:1}}</a>
-					<a href="/list_{{onetype.id}}_{{plist.number|add:2}}/" >{{plist.number|add:2}}</a>
-				{%elif plist.number|add:-2 in plist.paginator.page_range%}
-
-					<a href="/list_{{onetype.id}}_{{plist.number|add:1}}/" >{{plist.number|add:-2}}</a>
-					<a href="/list_{{onetype.id}}_{{plist.number|add:2}}/" >{{plist.number|add:-1}}</a>
-					<a href="/list_{{onetype.id}}_{{plist.number}}/" >{{plist.number}}</a>
-
+					{%endif%}
 				{%endif%}
+
+
+
+
+
+				<a href="/list_{{onetype.id}}_{{plist.number|add:1}}/" >next</a>
 				<a href="/list_{{onetype.id}}_{{plist.paginator.num_pages}}/" >末页</a>
 			</div>
 		</div>

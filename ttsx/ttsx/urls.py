@@ -20,7 +20,9 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^usr/', include('df_user.urls')),
     url(r'^', include('df_goods.urls')),
+    url(r'^car/', include('df_car.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^search/', include('haystack.urls')),
 
 
 ]

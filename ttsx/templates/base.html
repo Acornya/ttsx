@@ -10,25 +10,25 @@
 	<script type="text/javascript" src="/static/js/register.js"></script>
     {%endblock js%}
 	<script>
-		$(function () {
-			window.addEventListener('beforeunload', function(event) {
-
-				  console.log('I am the 1st one.');
-				});
-				window.onbeforeunload = function(e) {
-				  e = e || window.event;
-				  // 兼容IE8和Firefox 4之前的版本
-				  if (e) {
-					e.returnValue = '重新加载提示';
-				   }
-				   // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
-				   return '关闭提示......';
-				};
-
-
-       }
-
-        )
+//		$(function () {
+//			window.addEventListener('beforeunload', function(event) {
+//
+//				  console.log('I am the 1st one.');
+//				});
+//				window.onbeforeunload = function(e) {
+//				  e = e || window.event;
+//				  // 兼容IE8和Firefox 4之前的版本
+//				  if (e) {
+//					e.returnValue = '重新加载提示';
+//				   }
+//				   // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+//				   return '关闭提示......';
+//				};
+//
+//
+//       }
+//
+//        )
 	</script>
 </head>
 <body>
@@ -53,9 +53,9 @@
 				{%endif%}
 				<div class="user_link fl">
 					<span>|</span>
-					<a href="/usr/center/">用户中心</a>
+					<a href="/usr/center/">{{title}}</a>
 					<span>|</span>
-					<a href="../cart.html">我的购物车</a>
+					<a href="/car/">我的购物车</a>
 					<span>|</span>
 					<a href="/usr/books/">我的订单</a>
 				</div>
@@ -66,30 +66,53 @@
 	{%if search_flog|default:'0' == '0'%}
 	<div class="search_bar clearfix">
 		<a href="/" class="logo fl"><img src="/static/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
-		<div class="search_con fr">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>
+		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;{{title}}</div>
+		<form method="get" action="/search/" target="_blank">
+			<div class="search_con fr">
+				<input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+				<input type="submit" class="input_btn fr" value="搜索">
+			</div>
+		</form>
 	</div>
 	{%else%}
 	<div class="search_bar clearfix">
 		<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
-		<div class="search_con fl">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>
+		<form method="get" action="/search/" target="_blank">
+			<div class="search_con fl">
+				<input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+				<input type="submit" class="input_btn fr"  value="搜索">
+			</div>
+		</form>
 		<div class="guest_cart fr">
-			<a href="#" class="cart_name fl">我的购物车</a>
-			<div class="goods_count fl" id="show_count">1</div>
+			<a href="/car/" class="cart_name fl">我的购物车</a>
+			<div class="goods_count fl" id="show_count">0</div>
 		</div>
+
 	</div>
+        <script>
+            $.get('/islogin/',function (data) {
+                if(data.flog)
+                {
+                    $.get('/show_count/',function (data) {
+                        $('#show_count').text(data.typenum)
+                    })
+                }
+                else
+                {
+                    $('.goods_count').test(0)
+
+                }
+            })
+         </script>
+
+
   	{%endif%}
 {%endif%}
+
 {%block body%}
 {%endblock body%}
 
-	<div class="footer no-mp">
+	<div class="footer ">
 		<div class="foot_link">
 			<a href="#">关于我们</a>
 			<span>|</span>

@@ -7,6 +7,8 @@ class UrlMiddleware:
                                 '/usr/uname_confm/',
                                 '/usr/login/',
                                 '/usr/logout/',
-                                '/usr/login_handle/',]:
+                                '/usr/login_handle/',
+                                '/islogin/',
+                                'cart_save']:
 
             request.session['lastpath']=request.get_full_path()

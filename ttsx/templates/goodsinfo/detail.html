@@ -37,6 +37,51 @@
 				$('.total em').html(total.toFixed(2)+'元')
 
             })
+			var $add_x = $('#add_cart').offset().top;
+			var $add_y = $('#add_cart').offset().left;
+
+			var $to_x = $('#show_count').offset().top;
+			var $to_y = $('#show_count').offset().left;
+
+			$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
+			$('#add_cart').click(function(){
+				$(".add_jump").stop().animate({
+					'left': $to_y+7,
+					'top': $to_x+7},
+					"fast", function() {
+						$(".add_jump").fadeOut('fast',function(){
+							$('#show_count').html(2);
+					});
+
+				});
+			})
+
+			$('#add_cart').click(function () {
+			    gid = $('#gid').val()
+                gnum = $('.num_show').val()
+
+				$.get('/islogin/',function (data) {
+
+					if(data.flog)
+					{
+					   $.get('/cart_save_detail/',{'good_id':gid,'good_num':gnum},function (data) {
+						if(data.flog)
+						{
+						    alert('saved')
+						}
+						else
+						{
+						    alert('not saved')
+						}
+                    })
+					}
+					else
+					{
+					    alert('not login')
+					}
+                })
+            })
+
         })
 	</script>
 {%endblock js%}
@@ -63,8 +108,9 @@
 			<div class="goods_num clearfix">
 				<div class="num_name fl">数 量：</div>
 				<div class="num_add fl">
-					<input type="text" class="num_show fl" >
+					<input type="text" class="num_show fl" value="">
 					<input type="hidden" id="kc" value={{it.gkucun}}>
+					<input type="hidden" id="gid" value={{it.id}}>
 
 					<a href="javascript:;" class="add fr">+</a>
 					<a href="javascript:;" class="minus fr">-</a>	
@@ -73,7 +119,8 @@
 			<div class="total">总价：<em>{{it.gprice}}元</em></div>
 			<div class="operate_btn">
 				<a href="javascript:;" class="buy_btn">立即购买</a>
-				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>				
+				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+
 			</div>
 		</div>
 	</div>
@@ -98,27 +145,7 @@
 	</div>
 <div class="add_jump"></div>
 
-	<script type="text/javascript" src="js/jquery-1.12.2.js"></script>
-	<script type="text/javascript">
-		var $add_x = $('#add_cart').offset().top;
-		var $add_y = $('#add_cart').offset().left;
 
-		var $to_x = $('#show_count').offset().top;
-		var $to_y = $('#show_count').offset().left;
-
-		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
-		$('#add_cart').click(function(){
-			$(".add_jump").stop().animate({
-				'left': $to_y+7,
-				'top': $to_x+7},
-				"fast", function() {
-					$(".add_jump").fadeOut('fast',function(){
-						$('#show_count').html(2);
-					});
-
-			});
-		})
-	</script>
 {%endblock fr%}
 
 
